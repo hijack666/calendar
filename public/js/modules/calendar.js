@@ -1,3 +1,7 @@
+import { camelCase } from "jquery";
+
+function calendar() {
+
 $( document ).ready(function() { 
 
 let currentMonth = new Date().getMonth();
@@ -110,3 +114,7 @@ $('.yep table tbody td').on('click', function(event) {
 
 
 }); // Документ готов
+
+}
+
+export default calendar;
