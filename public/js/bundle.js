@@ -7,9 +7,6 @@
   \********************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module, top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 40:46-50 */
-/*! CommonJS bailout: module.exports is used directly at 18:43-57 */
-/*! CommonJS bailout: module.exports is used directly at 27:2-16 */
 /***/ (function(module, exports) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10908,15 +10905,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 
 
+
+// import getDate from './getDate';
+
 function calendar() {
 
-$( document ).ready(function() { 
+// $( document ).ready(function() { 
+    // Библиотека axios
+    axios.get('http://localhost:3000/requests')
+        // .then(data => console.log(data)) // Получаем сразу объект
+        .then(data => {
+            // data.data.forEach( ({img, altimg, title, descr, price}) => {  //Деструктуризация
+            //     new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+            // });
+            console.log('Date from db');
+            console.log(data.data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
 
 let currentMonth = new Date().getMonth();
 let currentMonthName;
 let todayOfMonth = new Date().getDate(); //Получаем число сегодня
 let thisYear = new Date().getFullYear();
-let currentDay = new Date().getDay();
+let currentDayOfWeek = new Date().getDay();
 
 /* Получаем день недели месяца */
 function dayOfMonth(year, month, day) {
@@ -10967,65 +10980,120 @@ let thisMonthLength;
 //     return thisMonthLength;
 // }
 
+function fillCalendarWithDays(element) {
+    const thisMonth = currentMonth + element + 1;
+    thisMonthLength = daysInMonth(thisYear, thisMonth);
+    $(`#m${element+1} table tbody td`).each(function(index) { // Перебор в массиве
+    // $(`.yep table tbody td`).each(function(index) { 
+        if (index >= dayOfMonth(thisYear, thisMonth, 0) && index < (thisMonthLength + dayOfMonth(thisYear, thisMonth, 0)) ) {    
+            $(this).append(`${-(dayOfMonth(thisYear, thisMonth, 0) - index -1)}`);
+            $(this).addClass('day'); // отделяем дни месяца
+        }
+
+        /* Выходные - СБ, ВСК */
+        if ( (index + 1) % 7  === 0 || (index + 1) % 7  === 6) {
+            $(this).addClass('holiday');
+        }
+    });
+}
+
 function addDays(year, month) { /* Нужны ли входные данные?? */
     $('.yep').each( function(element) {
-        /* Вставляем дни в ячейки */
-        daysInMonth(thisYear, element + 1 + currentMonth);
-        const thisMonth = currentMonth + element+1;
-        thisMonthLength = daysInMonth(thisYear, thisMonth);
-        $(`#m${element+1} table tbody td`).each(function(index) {
-            if (index >= dayOfMonth(thisYear, thisMonth, 0) && index < (thisMonthLength + dayOfMonth(thisYear, thisMonth, 0)) ) {    
-                $(this).append(`${-(dayOfMonth(thisYear, thisMonth, 0) - index -1)}`);
-            }          
-        });
 
-        /* СЕГОДНЯ */
-        $('#m1 table tbody td').each(function(index) {
-            if (index === currentDay +6) {
-                $(this).addClass("today");
-            }
-        });
+        /* Вставляем дни в ячейки */
+        fillCalendarWithDays(element);
+
 
         /* Добавляем атрибут, чтобы знать порядок месяца */
-        let yearCycleCurrentMonth = currentMonth+1+element;
+        let yearCycleCurrentMonth = currentMonth + 1 + element;
         if (yearCycleCurrentMonth > 12) {
             yearCycleCurrentMonth = yearCycleCurrentMonth - 12;
             
         }
         $(this).attr('data-month',`${yearCycleCurrentMonth}`);
 
-
     });
-    
-    
     
 }
 addDays(thisYear, currentMonth);
 
-let chosenDate = [];
-/* Получаем дату из календаря */
-$('.yep table tbody td').on('click', function(event) {
-    let getMonthFromCalendar = $(this)[0].parentElement.parentElement.parentNode.parentElement.attributes['data-month'].value;
-    if ($(event.target).is(this) == false ) {
-        chosenDate.length = 0;
-        console.log('chosenDate');
+/* СЕГОДНЯ */
+$('#m1 table tbody td').each(function(index) { 
+    if ( $(this)[0].innerHTML == todayOfMonth) {
+        console.log(this);
+        $(this).addClass("today");
     }
-    // console.log(getMonthFromCalendar);
-    // console.log($(this)[0].innerHTML); // Получаем число
-    chosenDate.push($(this)[0].innerHTML, getMonthFromCalendar);
-    
-    console.log(chosenDate);
+    // console.log(this.innerHTML);
 });
 
 
-// console.log(chosenDate);
-
-
-}); // Документ готов
+// }); // Документ готов
 
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (calendar);
+
+/***/ }),
+
+/***/ "./public/js/modules/getDate.js":
+/*!**************************************!*\
+  !*** ./public/js/modules/getDate.js ***!
+  \**************************************/
+/*! namespace exports */
+/*! export default [provided] [no usage info] [missing usage info prevents renaming] */
+/*! other exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_require__, __webpack_exports__, __webpack_require__.r, __webpack_require__.d, __webpack_require__.* */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ });
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./public/js/services/services.js");
+
+// import { inputForm } from './inputForm.js';
+
+function getDate() {
+// $( document ).ready(function() {
+
+    let chosenDate = [];
+    /* Получаем дату из календаря */
+    $('.yep table tbody td').on('click', function(event) {
+        let getMonthFromCalendar = $(this)[0].parentElement.parentElement.parentNode.parentElement.attributes['data-month'].value;
+        
+        // if ($(event.target).is(this) == false ) { // если кликнул не по дате, надо ее стереть, пока не рабит
+        //     chosenDate.length = 0;
+        //     console.log('chosenDate');
+        // }
+
+        chosenDate = []; // обновляем массив, в нем должно быть два значения: число, месяц
+
+        chosenDate.push($(this)[0].innerHTML, getMonthFromCalendar);
+        // console.log(chosenDate);
+        const object = {
+                month: chosenDate[1],
+                data: chosenDate[0]
+        };
+        console.log(object);
+        const json = JSON.stringify(object);
+    
+        //Отправляет дату в db
+        (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.postData)('http://localhost:3000/requests', json)
+                .then( data => {
+                    console.log(data);
+                
+                }).catch((e) => {
+                    console.log(e);
+                }).finally(()=> {
+                    console.log('finally');
+                });
+    });
+
+// });
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (getDate);
 
 /***/ }),
 
@@ -11041,12 +11109,60 @@ $('.yep table tbody td').on('click', function(event) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_calendar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/calendar */ "./public/js/modules/calendar.js");
+/* harmony import */ var _modules_getDate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/getDate */ "./public/js/modules/getDate.js");
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
+    $( document ).ready(function() {
     (0,_modules_calendar__WEBPACK_IMPORTED_MODULE_0__.default)();
-
+    (0,_modules_getDate__WEBPACK_IMPORTED_MODULE_1__.default)();
+    });
 });
+
+/***/ }),
+
+/***/ "./public/js/services/services.js":
+/*!****************************************!*\
+  !*** ./public/js/services/services.js ***!
+  \****************************************/
+/*! namespace exports */
+/*! export getResource [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export postData [provided] [no usage info] [missing usage info prevents renaming] */
+/*! other exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_require__.r, __webpack_exports__, __webpack_require__.d, __webpack_require__.* */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "postData": () => /* binding */ postData,
+/* harmony export */   "getResource": () => /* binding */ getResource
+/* harmony export */ });
+const postData = async (url, data) => { //Добавляя 'async' говорим что внутри ф-ции будет асинхронный код
+    const res = await fetch(url, { // Добавляя await - ждем выполнение этой операции
+        method: "POST",
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: data
+    });
+
+    return await res.json(); // Promise => тоже добавляем await 
+};
+
+const getResource = async (url) => { 
+    const res = await fetch(url);
+
+    if (!res.ok) { //типа catch, если что то пошло не так
+       throw new Error(`Could not fetch ${url}, status: ${res.status}`); // выкидываем ошибку
+    }
+
+    return await res.json(); // Promise => тоже добавляем await 
+};
+
+
+
 
 /***/ })
 

@@ -24,3 +24,6 @@ table tbody td:hover {
 .today {
     font-weight: bold;
 }
+.holiday {
+    color: red;
+}

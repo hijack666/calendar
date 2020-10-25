@@ -1,14 +1,30 @@
 import { camelCase } from "jquery";
 
+import {getResource} from '../services/services';
+// import getDate from './getDate';
+
 function calendar() {
 
-$( document ).ready(function() { 
+// $( document ).ready(function() { 
+    // Библиотека axios
+    axios.get('http://localhost:3000/requests')
+        // .then(data => console.log(data)) // Получаем сразу объект
+        .then(data => {
+            // data.data.forEach( ({img, altimg, title, descr, price}) => {  //Деструктуризация
+            //     new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+            // });
+            console.log('Date from db');
+            console.log(data.data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
 
 let currentMonth = new Date().getMonth();
 let currentMonthName;
 let todayOfMonth = new Date().getDate(); //Получаем число сегодня
 let thisYear = new Date().getFullYear();
-let currentDay = new Date().getDay();
+let currentDayOfWeek = new Date().getDay();
 
 /* Получаем день недели месяца */
 function dayOfMonth(year, month, day) {
@@ -59,61 +75,54 @@ let thisMonthLength;
 //     return thisMonthLength;
 // }
 
+function fillCalendarWithDays(element) {
+    const thisMonth = currentMonth + element + 1;
+    thisMonthLength = daysInMonth(thisYear, thisMonth);
+    $(`#m${element+1} table tbody td`).each(function(index) { // Перебор в массиве
+    // $(`.yep table tbody td`).each(function(index) { 
+        if (index >= dayOfMonth(thisYear, thisMonth, 0) && index < (thisMonthLength + dayOfMonth(thisYear, thisMonth, 0)) ) {    
+            $(this).append(`${-(dayOfMonth(thisYear, thisMonth, 0) - index -1)}`);
+            $(this).addClass('day'); // отделяем дни месяца
+        }
+
+        /* Выходные - СБ, ВСК */
+        if ( (index + 1) % 7  === 0 || (index + 1) % 7  === 6) {
+            $(this).addClass('holiday');
+        }
+    });
+}
+
 function addDays(year, month) { /* Нужны ли входные данные?? */
     $('.yep').each( function(element) {
-        /* Вставляем дни в ячейки */
-        daysInMonth(thisYear, element + 1 + currentMonth);
-        const thisMonth = currentMonth + element+1;
-        thisMonthLength = daysInMonth(thisYear, thisMonth);
-        $(`#m${element+1} table tbody td`).each(function(index) {
-            if (index >= dayOfMonth(thisYear, thisMonth, 0) && index < (thisMonthLength + dayOfMonth(thisYear, thisMonth, 0)) ) {    
-                $(this).append(`${-(dayOfMonth(thisYear, thisMonth, 0) - index -1)}`);
-            }          
-        });
 
-        /* СЕГОДНЯ */
-        $('#m1 table tbody td').each(function(index) {
-            if (index === currentDay +6) {
-                $(this).addClass("today");
-            }
-        });
+        /* Вставляем дни в ячейки */
+        fillCalendarWithDays(element);
+
 
         /* Добавляем атрибут, чтобы знать порядок месяца */
-        let yearCycleCurrentMonth = currentMonth+1+element;
+        let yearCycleCurrentMonth = currentMonth + 1 + element;
         if (yearCycleCurrentMonth > 12) {
             yearCycleCurrentMonth = yearCycleCurrentMonth - 12;
             
         }
         $(this).attr('data-month',`${yearCycleCurrentMonth}`);
 
-
     });
-    
-    
     
 }
 addDays(thisYear, currentMonth);
 
-let chosenDate = [];
-/* Получаем дату из календаря */
-$('.yep table tbody td').on('click', function(event) {
-    let getMonthFromCalendar = $(this)[0].parentElement.parentElement.parentNode.parentElement.attributes['data-month'].value;
-    if ($(event.target).is(this) == false ) {
-        chosenDate.length = 0;
-        console.log('chosenDate');
+/* СЕГОДНЯ */
+$('#m1 table tbody td').each(function(index) { 
+    if ( $(this)[0].innerHTML == todayOfMonth) {
+        console.log(this);
+        $(this).addClass("today");
     }
-    // console.log(getMonthFromCalendar);
-    // console.log($(this)[0].innerHTML); // Получаем число
-    chosenDate.push($(this)[0].innerHTML, getMonthFromCalendar);
-    
-    console.log(chosenDate);
+    // console.log(this.innerHTML);
 });
 
 
-// console.log(chosenDate);
-
-
-}); // Документ готов
+// }); // Документ готов
 
 }
 
