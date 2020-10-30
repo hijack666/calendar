@@ -10921,10 +10921,9 @@ axios.get('http://localhost:3000/requests')
     });
 
 let currentMonth = new Date().getMonth();
-let currentMonthName;
+let prevMonthName;
 let todayOfMonth = new Date().getDate(); //Получаем число сегодня
 let thisYear = new Date().getFullYear();
-let currentDayOfWeek = new Date().getDay();
 
 /* Получаем день недели месяца */
 function dayOfMonth(year, month, day) {
@@ -10936,44 +10935,32 @@ function dayOfMonth(year, month, day) {
 }
 
 function daysInMonth (year, month) {
-    // console.log(new Date(year, month, 0).getDate())
     return new Date(year, month, 0).getDate();
 }
 
 const tableTemplate = `<table><thead><th>ПН</th><th>ВТ</th><th>СР</th><th>ЧТ</th><th>ПТ</th><th>СБ</th><th>ВС</th></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>`;
 
 let monthArray = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь','январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
-for (var i=0; i < 12; i++ ) {
-    if ( currentMonth === i ) {
-        currentMonthName = monthArray[i];
-        // nextMonth = monthArray[i];
-        $('#m1').append(`<h2>${currentMonthName}</h2>`);
-        // i++;
+let start;
+for (var i=0; i < 24; i++ ) {
+    if ( currentMonth === i+1 ) { // Если следующая итерация - текущий месяц, то текущую итерацию записать как предыдущий
+        prevMonthName = monthArray[i];
+        $('#m1').append(`<h2>${prevMonthName}</h2>`);
         $('#m1').append(`${tableTemplate}`);
-        for (var k=2; k<13; k++) { // Массив в массиве, переделать
-            $('#m'+k).append(`<h2>${monthArray[i+1]}</h2>`);
-            $('#m'+k).append(`${tableTemplate}`);
-            i++;
-        }
+        start = 2; // Записываем в м2 
     }
+    
+    $('#m'+start).append(`<h2>${monthArray[i+1]}</h2>`);
+    $('#m'+start).append(`${tableTemplate}`);
+    start++;
 }
 
-console.log(currentMonthName);
-// console.log(daysInMonth(currentMonth+1, thisYear));
-let thisMonthLength;
-// let monthLength;
+let thisMonthLength; // Длина месяца
 
-// function countDaysInMonth(year, month) {
-//     thisMonthLength = daysInMonth(thisYear, currentMonth+1);
-//     currentMonth = currentMonth + 1;
-//     // monthLength = thisMonthLength;
-//     console.log(thisMonthLength);
-//     return thisMonthLength;
-// }
-
+// Ф-ция заполнения календаря
 function fillCalendarWithDays(element) {
-    const thisMonth = currentMonth + element + 1;
-    thisMonthLength = daysInMonth(thisYear, thisMonth);
+    const thisMonth = currentMonth + element;
+    thisMonthLength = daysInMonth(thisYear, thisMonth); // Длина месяца
     $(`#m${element+1} table tbody td`).each(function(index) { // Перебор в массиве
     // $(`.yep table tbody td`).each(function(index) { 
         if (index >= dayOfMonth(thisYear, thisMonth, 0) && index < (thisMonthLength + dayOfMonth(thisYear, thisMonth, 0)) ) {    
@@ -10994,9 +10981,8 @@ function addDays(year, month) { /* Нужны ли входные данные??
         /* Вставляем дни в ячейки */
         fillCalendarWithDays(element);
 
-
         /* Добавляем атрибут, чтобы знать порядок месяца */
-        let yearCycleCurrentMonth = currentMonth + 1 + element;
+        let yearCycleCurrentMonth = currentMonth + element + 1;
         if (yearCycleCurrentMonth > 12) {
             yearCycleCurrentMonth = yearCycleCurrentMonth - 12;
             
@@ -11009,12 +10995,10 @@ function addDays(year, month) { /* Нужны ли входные данные??
 addDays(thisYear, currentMonth);
 
 /* СЕГОДНЯ */
-$('#m1 table tbody td').each(function(index) { 
+$('.currentMonth table tbody td').each(function(index) { 
     if ( $(this)[0].innerHTML == todayOfMonth) {
-        console.log(this);
         $(this).addClass("today");
     }
-    // console.log(this.innerHTML);
 });
 
 

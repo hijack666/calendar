@@ -6,6 +6,9 @@
 h2 {
     text-align: center;
 }
+.currentMonth h2 {
+    color: green;
+}
 table {
     margin: 0 auto;
 }
