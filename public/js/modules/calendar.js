@@ -5,20 +5,15 @@ import {getResource} from '../services/services';
 
 function calendar() {
 
-// $( document ).ready(function() { 
-    // Библиотека axios
-    axios.get('http://localhost:3000/requests')
-        // .then(data => console.log(data)) // Получаем сразу объект
-        .then(data => {
-            // data.data.forEach( ({img, altimg, title, descr, price}) => {  //Деструктуризация
-            //     new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-            // });
-            console.log('Date from db');
-            console.log(data.data);
-        })
-        .catch(err => {
-            console.log(err);
-        });
+// Библиотека axios
+axios.get('http://localhost:3000/requests')
+    .then(data => {
+        console.log('Date from db');
+        console.log(data.data);
+    })
+    .catch(err => {
+        console.log(err);
+    });
 
 let currentMonth = new Date().getMonth();
 let currentMonthName;
@@ -34,16 +29,11 @@ function dayOfMonth(year, month, day) {
     }
     return firstDayOfTheWeek;
 }
-// console.log(dayOfMonth(2020, 11, 1)); // получаем первый день недели Ноября ВСк
 
 function daysInMonth (year, month) {
     // console.log(new Date(year, month, 0).getDate())
     return new Date(year, month, 0).getDate();
 }
-
-
-// console.log(daysInMonth(10, 2020)); // дней в феврале
-
 
 const tableTemplate = `<table><thead><th>ПН</th><th>ВТ</th><th>СР</th><th>ЧТ</th><th>ПТ</th><th>СБ</th><th>ВС</th></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>`;
 
@@ -55,14 +45,15 @@ for (var i=0; i < 12; i++ ) {
         $('#m1').append(`<h2>${currentMonthName}</h2>`);
         // i++;
         $('#m1').append(`${tableTemplate}`);
-        for (var k=2; k<13; k++) {
+        for (var k=2; k<13; k++) { // Массив в массиве, переделать
             $('#m'+k).append(`<h2>${monthArray[i+1]}</h2>`);
             $('#m'+k).append(`${tableTemplate}`);
             i++;
         }
     }
 }
-// console.log(currentMonth);
+
+console.log(currentMonthName);
 // console.log(daysInMonth(currentMonth+1, thisYear));
 let thisMonthLength;
 // let monthLength;
