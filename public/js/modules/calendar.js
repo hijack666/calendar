@@ -6,14 +6,34 @@ import {getResource} from '../services/services';
 function calendar() {
 
 // Библиотека axios
-axios.get('http://localhost:3000/requests')
-    .then(data => {
-        console.log('Date from db');
-        console.log(data.data);
-    })
-    .catch(err => {
-        console.log(err);
-    });
+function showDates(dates) {
+    for (let i=0; i<dates.length; i++) {
+        if (dates[i].month) {
+            $(`[data-month="${dates[i].month}"] table td:contains("${dates[i].data}")`).addClass('red'); 
+            // console.log(dates[i].month);
+            // console.log( $(`[data-month="${dates[i].month}"] table td:contains("${dates[i].data}")`));
+        }
+        
+    }
+}
+
+// axios.get('http://localhost:3000/requests')
+//     .then(data => {
+//         // console.log('Date from db');
+//         console.log(data.data);
+//         // for (let i=0; i<data.data.length; i++) {
+//         //     if (data.data[i].month) {
+//         //         $(`[data-month="${data.data[i].month}"] table td:contains("${data.data[i].data}")`).addClass('red'); 
+//         //         console.log(data.data[i].month)
+//         //     }
+            
+//         // }
+//         showDates(data.data);
+//     })
+//     .catch(err => {
+//         console.log(err);
+//     });
+
 
 let currentMonth = new Date().getMonth();
 let prevMonthName;
@@ -77,7 +97,7 @@ function addDays(year, month) { /* Нужны ли входные данные??
         fillCalendarWithDays(element);
 
         /* Добавляем атрибут, чтобы знать порядок месяца */
-        let yearCycleCurrentMonth = currentMonth + element + 1;
+        let yearCycleCurrentMonth = currentMonth + element;
         if (yearCycleCurrentMonth > 12) {
             yearCycleCurrentMonth = yearCycleCurrentMonth - 12;
             

@@ -3,7 +3,7 @@
 let path = require('path');
 
 module.exports = {
-  mode: 'development', 
+  mode: 'development',
   entry: './public/js/script.js',
   output: {
     filename: 'bundle.js',
@@ -13,5 +13,7 @@ module.exports = {
 
   devtool: "source-map", 
 
-  module: {} 
+  module: {
+    
+  }
 };

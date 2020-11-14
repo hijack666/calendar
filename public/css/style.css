@@ -21,6 +21,9 @@ table tbody td {
     height: 15px;
     text-align: center;
 }
+table tbody td.red {
+    background-color: rgba(255, 0, 0, 0.3);
+}
 table tbody td:hover {
     cursor: pointer;
 }
